@@ -27,6 +27,12 @@ This project connects a large language model (LLM) to a running instance of **Po
 | Pokemon FireRed ROM | `.gba` file (not included) |
 | OpenAI API key | Set as `OPENAI_API_KEY` |
 
+### ROM Compatibility
+
+The harness is currently compatible only with the **Pokemon - FireRed Version (USA)** ROM.
+
+- Expected ROM MD5: `e26ee0d44e809351c8ce2d73c7400cdd`
+
 ---
 
 ## Project Structure
@@ -310,4 +316,10 @@ The project generates the following files and directories during execution:
 
 ## License
 
-This project is open source. See [LICENSE](LICENSE) for details.
+This project is licensed under **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.
+
+- Forking and modifications are allowed.
+- Commercial use is not allowed.
+- Attribution is required (credit this repository and link to the original source when reusing code).
+
+See [LICENSE](LICENSE) for details.
