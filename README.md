@@ -57,7 +57,7 @@ The harness is currently compatible only with the **Pokemon - FireRed Version (U
 
 ```bash
 git clone <repo-url>
-cd gpt-play-pokemon-firered-open-source
+cd gpt-play-pokemon-firered
 ```
 
 If you use the `pokefirered` submodule:
