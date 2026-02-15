@@ -1,0 +1,128 @@
+[
+    {
+      "id": "starter_pokemon",
+      "type": "event",
+      "trigger": "EVENT_GOT_STARTER",
+      "label": "Starter Pokémon"
+    },
+    {
+      "id": "get_pokedex",
+      "type": "event",
+      "trigger": "EVENT_GOT_POKEDEX",
+      "label": "Get Pokédex"
+    },
+    {
+      "id": "boulder_badge",
+      "type": "badge",
+      "trigger": "BOULDER",
+      "label": "Boulder Badge"
+    },
+    {
+      "id": "mt_moon",
+      "type": "map_visit",
+      "trigger": "CERULEAN_CITY",
+      "label": "Mt. Moon"
+    },
+    {
+      "id": "cascade_badge",
+      "type": "badge",
+      "trigger": "CASCADE",
+      "label": "Cascade Badge"
+    },
+    {
+      "id": "ss_anne",
+      "type": "event",
+      "trigger": "EVENT_SS_ANNE_LEFT",
+      "label": "S.S. Anne"
+    },
+    {
+      "id": "thunder_badge",
+      "type": "badge",
+      "trigger": "THUNDER",
+      "label": "Thunder Badge"
+    },
+    {
+      "id": "rock_tunnel",
+      "type": "map_visit",
+      "trigger": "LAVENDER_TOWN",
+      "label": "Rock Tunnel"
+    },
+    {
+      "id": "rainbow_badge",
+      "type": "badge",
+      "trigger": "RAINBOW",
+      "label": "Rainbow Badge"
+    },
+    {
+      "id": "rocket_hideout",
+      "type": "event",
+      "trigger": "EVENT_BEAT_ROCKET_HIDEOUT_GIOVANNI",
+      "label": "Rocket Hideout"
+    },
+    {
+      "id": "pokemon_tower",
+      "type": "event",
+      "trigger": "EVENT_GOT_POKE_FLUTE",
+      "label": "Pokémon Tower"
+    },
+    {
+      "id": "soul_badge",
+      "type": "badge",
+      "trigger": "SOUL",
+      "label": "Soul Badge"
+    },
+    {
+      "id": "safari_zone",
+      "type": "event",
+      "trigger": "EVENT_GOT_HM03",
+      "label": "Safari Zone"
+    },
+    {
+      "id": "silph_co",
+      "type": "event",
+      "trigger": "EVENT_BEAT_SILPH_CO_GIOVANNI",
+      "label": "Silph Co."
+    },
+    {
+      "id": "marsh_badge",
+      "type": "badge",
+      "trigger": "MARSH",
+      "label": "Marsh Badge"
+    },
+    {
+      "id": "pokemon_mansion",
+      "type": "map_visit",
+      "trigger": "CINNABAR_ISLAND_GYM",
+      "label": "Pokémon Mansion"
+    },
+    {
+      "id": "volcano_badge",
+      "type": "badge",
+      "trigger": "VOLCANO",
+      "label": "Volcano Badge"
+    },
+    {
+      "id": "earth_badge",
+      "type": "badge",
+      "trigger": "EARTH",
+      "label": "Earth Badge"
+    },
+    {
+      "id": "victory_road",
+      "type": "map_visit",
+      "trigger": "INDIGO_PLATEAU_POKEMON_CENTER_1_F",
+      "label": "Victory Road"
+    },
+    {
+      "id": "elite_four",
+      "type": "event",
+      "trigger": "EVENT_BEAT_LANCE",
+      "label": "Elite Four"
+    },
+    {
+      "id": "champion",
+      "type": "event",
+      "trigger": "EVENT_BEAT_CHAMPION_RIVAL",
+      "label": "Champion"
+    }
+  ]

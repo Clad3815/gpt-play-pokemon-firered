@@ -1,0 +1,763 @@
+# Pokémon FireRed Self-Analysis Framework
+
+## Purpose
+
+This framework helps you analyze your Pokémon FireRed gameplay **objectively** and in a way that is **consistent with your main gameplay instructions** (lean core team, HM utilities, anti-loop exploration, and time efficiency).
+
+**IMPORTANT:**
+Only report issues you are genuinely certain about.
+Perfect or near-perfect gameplay segments with **no errors at all are normal and expected**.
+
+**Outcome-Bias Guardrail (CRITICAL):**
+Do **not** judge decisions purely by outcomes (crits, misses, surprise coverage, RNG).
+Assess whether the decision was reasonable **given what you knew at the time** and the main prompt priorities.
+
+---
+
+# 🔍 ERROR ANALYSIS
+
+## Core Principle: ACCURACY OVER REPORTING
+
+**⚠️ CRITICAL:**
+Do **NOT** invent mistakes just to fill this report.
+Do **NOT** call something an error just because the outcome was bad.
+
+Only report an error when you have **clear evidence** that:
+
+* It contradicts **Pokémon FireRed mechanics**, or
+* It contradicts the **main gameplay prompt’s priorities**, or
+* It clearly **wasted time/resources** without any compensating benefit.
+
+### Definite Errors vs Possible Improvements (CRITICAL)
+
+- **Definite Error:** clear evidence + clearly better alternative available **at the time** + meaningful impact.
+- **Possible Improvement:** a suggestion that could be better, but is not provably wrong; label it explicitly as “Possible improvement” and place it mainly in **Actionable Improvements**, not as an “error.”
+
+### What Constitutes a Real Error
+
+1. **Factual Mistakes (Game Mechanics)**
+
+   * Saying something that is objectively false about Pokémon FireRed.
+   * Example: "Fainted Pokémon can use HM/field moves outside battle" (this is false in Gen 3 – fainted Pokémon cannot use field moves).
+
+2. **Memory / Knowledge Contradictions**
+
+   * Stating something that contradicts your own `<memory>` or previously confirmed facts.
+   * Example: claiming you saved “before a gym” when your memory log says you saved after it.
+
+3. **Strategic Missteps (Relative to Your Strategy)**
+
+   * Decisions that **clearly contradict the main prompt**:
+
+     * Ignoring nearby ❓ tiles and backtracking long distances.
+     * Wasting many turns or items with no benefit.
+     * Using resources in ways that obviously reduce efficiency or safety.
+   * Not every suboptimal choice is an error. It must be **clearly and obviously** worse than available alternatives, **given what you knew at the time**.
+
+4. **Spatial Hallucinations**
+
+   * Claiming knowledge of **building locations or map layouts** that you have not explored or confirmed via your explored_map and markers.
+
+### Analysis Method
+
+1. **Review Recent Actions**
+
+   * Examine your last **5–10 decisions**:
+
+     * Movements.
+     * Battle choices.
+     * Menu decisions.
+     * Tool usage (markers, memory, objectives, etc.).
+
+2. **Verify Against Game Logic**
+
+   * Check whether what you said matches **Pokémon FireRed mechanics** as understood by your knowledge base.
+
+3. **Cross-Reference Memory**
+
+   * Look for contradictions between:
+
+     * What you say now.
+     * What is stored in `<memory>` and your objectives.
+
+4. **Assess Spatial Claims**
+
+   * Did you claim to know where a building/entrance was **without having explored ❓ tiles** or placing markers there?
+
+5. **Derive Prevention Rules**
+
+   * For each **clear, non-trivial error** you identify, ask:
+     * “What short rule would have prevented this mistake, given what I knew at the time?”
+   * These rules are candidates for persistent `tips_` memory entries that will help you avoid repeating the same error in the future.
+
+### 🚨 Hallucination Detection (High Priority)
+
+Only report hallucinations when you find **clear evidence** of:
+
+* **False Location Claims**
+
+  * Example: “The Pokémon Center is north of here” when you have not explored or mapped that area.
+
+* **Impossible Game Elements**
+
+  * Describing mechanics, items or features that **do not exist** in Pokémon FireRed.
+
+* **Contradictory Statements**
+
+  * Example: Saying “I never used path_to_location / markers / memory tools” when you just used them in the last few turns.
+
+* **False Memories**
+
+  * "I remember catching Mewtwo already" when no such catch ever happened.
+
+**Example of Genuine Hallucination:**
+
+> “I said 'The Pokémon Center is at (15,20)' but my explored_map shows those tiles as ❓ or I’ve never been there. This was an unfounded spatial assumption.”
+
+**NOT Hallucinations:**
+
+* Reasonable strategic decisions that didn’t work out (RNG, crits, misses).
+* Honest uncertainty about what to do next.
+* Small misunderstandings that were quickly corrected.
+
+---
+
+# 🧠 MEMORY MANAGEMENT
+
+## Memory Organization Rules (Aligned With Main Prompt)
+
+Your memory system is for **persistent knowledge**, not raw game state.
+
+**CRITICAL: In the "Memory / Markers Updates" section of your report, you must provide a COMPLETE audit of all visible memory entries—not vague suggestions. List every entry that needs action (delete/modify/consolidate/add) with exact keys and specific changes.**
+
+* **Stay Current**
+
+  * Delete or update outdated information regularly.
+  * Especially after gyms, legendaries, and major story events.
+  * Take a moment to list all outdated memory entries and suggest deleting them all at once.
+  * Check for any memory entries that are no longer useful and suggest deleting them.
+  * Memory should be kept clean and not cluttered with unnecessary information.
+
+* **Avoid Redundancy with RAM**
+
+  * Do **not** store:
+
+    * Current HP, money, items, party status.
+    * Any data already present in `<extracted_ram_data>`.
+  * Memory should add **interpretation** or **strategy**, not duplicate numbers.
+
+* **Fix Contradictions Quickly**
+
+  * If you find conflicting entries or notes, update or delete them immediately.
+  * Memory must remain **internally consistent**.
+
+* **Be Specific & Actionable**
+
+  * Store **insights**, not vague observations.
+  * Example:
+
+    * ✅ `"tips_attack_cursor" => "Battle cursor keeps last used move; safe to spam A (or a_until_end_of_dialog) to repeat the same attack."`
+    * ❌ `"The game is hard"` (not actionable).
+
+* **Learn From Mistakes With `tips_` Entries (CRITICAL)**
+
+  * Whenever, in this self-criticism, you identify a **significant error** or a **recurring pattern of mistakes**, you should create (or refine) at least one memory entry whose key starts with `tips_`.
+  * Each `tips_` entry must:
+    * Describe the **pattern** that led to the mistake.
+    * State a **clear behavioral rule** that would avoid this mistake in the future.
+    * Indicate **when** this rule applies (context/trigger condition).
+  * Only create `tips_` entries for **real, likely-to-recur** issues. Do not spam memory with tips for trivial or one-off events.
+
+### Memory Cleanup Safety (Anti-Hallucination)
+Only propose deleting/updating memory entries that are explicitly visible in `<memory>` in this context OR that were referenced in the last segment.
+Do not guess missing memory entries.
+
+### Memory Format
+
+Store entries as:
+
+* `"key_concept" => "specific_insight"`
+
+Examples:
+
+* `"tips_fly_menu" => "Fly city selection is a vertical list; only use UP/DOWN, and confirm the final city with a separate A press after visual check."`
+* `"tips_explore_question_tiles_first" => "If there are ❓ tiles within ~15 tiles and I am unsure where to go, checking them first usually saves time vs. long backtracking."`
+* `"tips_a_until_dialogue" => "When facing an NPC/sign/PC and I want to read the dialogue, using a_until_end_of_dialog alone is safe and fast; it stops automatically on choices."`
+* `"tips_batch_actions" => "If I know I need to set markers and then move, I should group marker tools and key_press in a single execute_action instead of splitting into multiple empty turns."`
+* `"door_switch_rocket_base_1" => "North switch opens south gate in main room."`
+
+**Battle-related tips examples:**
+
+* `"tips_never_attack_immunity" => "Before attacking, check opponent type + ability for immunities (Ground vs Flying/Levitate, Fire vs Flash Fire, etc.). Attacking into immunity wastes a turn."`
+* `"tips_switch_on_x4_weakness" => "If facing a ×4 weakness (e.g., Gyarados vs Electric), switching to a resist is usually safer than gambling on outspeeding or critting."`
+* `"tips_sack_low_value" => "If a Pokémon is doomed (low HP, slower, no KO), let it faint to get a free switch for my real answer. Get chip/status on the sack turn if possible."`
+* `"tips_safe_setup" => "Swords Dance / Dragon Dance / Calm Mind are safest when I survive at least 2 hits. One boost is often enough."`
+* `"tips_heal_timing" => "Healing is most valuable when it changes survival math (2HKO→3HKO). If I still die after healing, switching or attacking may be better."`
+* `"tips_priority_finisher" => "Quick Attack / Mach Punch can finish faster foes at low HP before they move."`
+* `"tips_boss_dossier" => "After losing a boss fight, write a Boss Dossier: their lead, dangerous moves, what surprised me, and what to fix."`
+
+**Don’t Store:**
+
+* Current game state (HP, items, money, exact location, etc.).
+* Obvious facts (“Pikachu is an Electric type”) unless they’re part of a strategy tip.
+* Temporary situations that will be obsolete next turn.
+
+---
+
+# 🎯 OBJECTIVE SETTING
+
+## Core Requirements (Consistent With `update_objectives`)
+
+When reviewing objectives, ensure they follow the main prompt’s rules:
+
+* **Achievable Scope**
+
+  * Focus on the **next few meaningful goals**, not “Beat the whole game” or “Become Champion.”
+  * Examples:
+
+    * “Reach and clear the next Gym.”
+    * “Explore remaining ❓ tiles in City X to find the Gym.”
+
+* **Clear Purpose**
+
+  * Every objective should include **WHY** it matters now.
+  * Tie objectives to badge progression, team building, legendaries, or exploration.
+
+* **Specific Plan**
+
+  * Explain **HOW** you will accomplish it:
+
+    * Which routes.
+    * Which markers.
+    * Which team members.
+
+* **Context**
+
+  * Show how the objective fits into your **overall progress**:
+
+    * “This will unlock Fly.”
+    * “This prepares us for Elite Four.”
+
+
+### Objective Template
+
+Each objective must answer:
+
+* **WHAT:** The concrete goal.
+* **WHY:** Why it’s important **now**.
+* **HOW:** The approach or plan.
+* **CONTEXT:** How it advances Champion path / exploration / team building.
+
+**✅ Good Example (Adapted to FireRed):**
+
+> "Defeat Misty to obtain the Cascade Badge, which allows us to use Cut outside battle. Plan: Use our Grass or Electric-type to counter her Water Pokémon; ensure everyone is healthy and stocked with healing items before entering the gym."
+
+**❌ Poor Example:**
+
+> “Go to gym” (no context, no reasoning, no plan).
+
+---
+
+# 🚫 ANTI-LOOPING PROTOCOL
+
+## Golden Rule: EXPLORE BEFORE ASSUMING
+
+The main gameplay prompt emphasizes **exploration of ❓ tiles** before long backtracking.
+
+**Most loops come from:**
+
+* Ignoring nearby ❓ tiles.
+* Over-trusting assumptions about where buildings or exits “should” be.
+
+### Exploration Priority (Self-Check)
+
+When analyzing your actions, examine whether you respected this priority order:
+
+1. **FIRST:**
+   Did you **check and explore nearby ❓ tiles** (roughly within ~10 tiles) before traveling far away?
+
+2. **SECOND:**
+   Did you use **known connections** (doors, stairs, routes) only after clearing relevant nearby ❓ clusters?
+
+3. **THIRD:**
+   For distant goals, did you at least look for closer ❓ tiles that might contain shortcuts, story triggers, or key buildings?
+
+> Treat the “10 tiles” radius as a **rule of thumb**, not an absolute law.
+> You only flag an error if you **clearly** ignored a significant cluster of nearby ❓ tiles and then started looping or blindly backtracking.
+
+### Loop Warning Signs
+
+* Visiting the **same location 3+ times** with no progress.
+* Repeatedly walking between the same few maps while ignoring visible ❓ tiles.
+* Saying “I know where that is” without having explored the area.
+
+### When Stuck (Retrospective Check)
+
+Ask:
+
+1. Did I stop and reconsider, or did I keep repeating the same pattern?
+2. Did I explore ❓ tiles near my current position before continuing?
+3. Did I verify my assumptions through systematic exploration?
+
+If the answer to these is **no**, you likely have a loop-related error to report.
+
+---
+
+# 💰 MONEY / ITEMS MANAGEMENT
+
+## Core Principle: EFFICIENT, PURPOSE-DRIVEN RESOURCE USE
+
+In Pokémon FireRed, especially early game, money is limited. Items should support:
+
+* **Survivability**.
+* **Efficient progression**.
+* **Preparation for important battles**.
+
+### Common Item Management Errors (To Check For)
+
+#### 🏥 Overusing Healing Items
+
+Flag issues only if you see clear patterns like:
+
+* Spamming healing items **right next to a Pokémon Center** instead of walking to heal for free.
+* Using **Max Potions** when Super/Hyper Potions would fully heal.
+* Using **Revives** when you could:
+  * Safely return to a Pokémon Center, and
+  * The faint did not happen in a critical context.
+* Using **Full Restores** for trivial status when cheaper cures exist.
+
+Notes: It's very important to have a perfect item management. Always point out if you see any issue with the item management and always suggest improvements to the item management + adding "tips_" memory entries to help you avoid repeating the same mistake in the future.
+However, still obey **Accuracy Over Reporting**: only flag issues you are confident about, with clear evidence.
+
+#### 🎒 Poor Inventory Composition
+
+Within the constraints of your current progress, check:
+
+* Do you carry:
+
+  * **Status removal**: items that cure poison, paralysis, sleep, burn, freeze (or their Berry equivalents)?
+  * **Emergency items**: a reasonable number of healing items and maybe Escape Rope (if consistent with your navigation plan)?
+  * **Repels**: useful for time optimization and repel tricks?
+
+You may flag issues such as:
+
+* Carrying almost no status cures while frequently facing status-heavy areas.
+* Lack of any Escape Rope or exit plan when entering long/dangerous caves (if this clearly caused avoidable trouble).
+* Inventory cluttered with many redundant items that could be sold or deposited, causing item management friction.
+
+#### 💸 Money Waste Patterns
+
+Look for **genuinely wasteful** spending:
+
+* Buying items you soon obtain abundantly for free and **not using the purchased ones**.
+* Using Ethers/Elixirs when a nearby Pokémon Center could restore PP safely and quickly.
+* Buying large quantities of items without clear justification (e.g., buying many Max Potions early game when you rarely use them).
+
+#### 📦 Storage Management
+
+Check whether:
+
+* Valuable items are left clogging the inventory when the bag is full.
+* Completely useless items are kept for long periods instead of being sold or discarded.
+* Items that are meant to be used (e.g., Rare Candy, Protein, etc.) are **never** used and **never** sold, **with no strategy mentioned**.
+
+**Important nuance:**
+Keeping Rare Candy, Protein, and similar items is **not automatically a mistake**.
+It becomes a potential issue if:
+
+* You keep them for a long time **without any stated plan** (no mention of selling them later or using them for specific level breakpoints), and
+* Their presence reduces clarity in your inventory or delays potential benefits.
+
+In that case, you may flag a **possible improvement**, not a guaranteed error.
+
+### Bag Kit Compliance Check (Aligned With Main Prompt)
+Evaluate inventory vs context (only flag as issues if it clearly caused risk/time loss):
+- Catch kit: enough good balls + status support + repels
+- Dungeon kit: heals + status cures + escape rope
+- Boss kit: stronger heals + full heals + optional X items
+Also check restock triggers if defined in the main prompt; missing key categories can be a valid issue if it caused avoidable trouble.
+
+### Item Priority Matrix (Early–Mid Game Guideline)
+
+Use this more as an **evaluation guideline** than a strict rule:
+
+1. **CRITICAL:** Status cures, some healing, a minimal emergency escape option.
+2. **IMPORTANT:** Potions/Hyper Potions appropriate to your level, Repels, useful Berries.
+3. **SITUATIONAL:** Revives, PP recovery items (Ethers/Elixirs) when needed.
+4. **LUXURY:** Max Potions, Full Restores, rare niche items early on.
+
+### Pre-Purchase Self-Check
+
+When reviewing past purchases, ask:
+
+1. “Was there a nearby Pokémon Center instead of buying this healing?”
+2. “Could I reasonably expect this item for free soon?”
+3. “Was my bag space and money situation considered?”
+4. “Was this purchase clearly aligned with an upcoming challenge?”
+
+Only flag as an error when the answer to several of these is **clearly no** and it led to visible inefficiency.
+
+---
+
+#### 🎓 Move Learning Negligence
+
+Flag potential mistakes when:
+
+* You skip key level-up moves that clearly improve your sweeper’s performance.
+* You ignore available TMs that would plainly fix a coverage gap you’ve identified.
+* You keep extremely weak early moves far longer than necessary with no plan (e.g., keeping Tackle forever instead of learning stronger STAB moves).
+
+#### 🧬 Evolution Timing Check (Aligned With Main Prompt)
+Flag only if:
+- A stone evolution was done with no plan and it clearly caused loss of important level-up moves OR forced avoidable TM spending
+- An item-held evolution trigger was missed/delayed due to forgetting to equip the required held item near the trigger level
+
+
+# 🔍 ASSUMPTION ELIMINATION (SPATIAL & KNOWLEDGE)
+
+## The Spatial Assumption Problem
+
+You must align with the main prompt: **you are not allowed to assume city layouts or building positions from out-of-game knowledge.**
+
+### Prohibited Assumptions
+
+You should **never** state as fact:
+
+* “The [building] is at [coordinates]” without having been there.
+* “The [place] is to the [direction]” without exploration evidence.
+* “The Gym should be here” based merely on previous playthroughs.
+
+These are classic sources of loops and hallucinations.
+
+### Correct “First-Time Player” Mindset
+
+Instead of assuming:
+
+* “I need to find the Pokémon Center. I’ll explore the nearby ❓ tiles in this city first.”
+* “I don’t know where the Gym is yet. I will systematically check all building entrances.”
+* “This area is still partially mapped; I should finish exploring it before backtracking.”
+
+### Pre-Movement Self-Check
+
+Before making or assessing a movement decision, ask:
+
+1. “Am I relying on external knowledge rather than explored_map and markers?”
+2. “Have I actually revealed these tiles or this building entrance?”
+3. “Are there any ❓ tiles near me that I should explore before committing to a long walk?”
+
+
+# Unexplored Areas ('❓' tiles) Guide
+
+## What '❓' Tiles Are
+'❓' tiles represent **areas of the map that you have not yet discovered**. They are not walls or obstacles—just unknown spaces. You uncover what's behind a '❓' tile by moving close enough that it comes into your **view range** (the visible area around your character), even if you do not step directly on the tile. It is very important to travel near the '❓' tiles—simply approaching them within your vision will automatically reveal what is beneath. Exploring is required to fully reveal the area; do not make assumptions about what lies behind '❓' tiles.
+
+## Critical Rule: Hidden Elements
+**ALL doors, stairs, ladders, and other interactive elements may be hidden behind '❓' tiles.** You cannot see these objects until the tiles near them come into your visible range through exploration. Even after you’ve found some doors, there may be more within unexplored regions.
+**Explore EVERYTHING**—move close to every '❓' tile, even if you think it’s a dead end or isolated. Bonk into walls and check all corners; often, what you’re looking for is simply hidden behind an unexplored tile.
+
+## Exploration Strategy
+1. **Move near all nearby '❓' tiles first**—your goal is to bring each one into your view range so they’re revealed on your map.
+2. **Check around discovered buildings and edges**—there are often '❓' tiles adjacent to explored regions, so scan those borders.
+3. **Explore systematically**—when you see clusters of '❓' tiles, approach them steadily in one direction to minimize missed spots.
+4. **Cities first**—when searching for specific buildings, always reveal ALL '❓' tiles within city areas before concluding nothing remains.
+5. **Never assume**—do not rely on memory or logic to guess what’s behind a '❓' tile. Always verify by exploring; knowledge comes only after revealing the area.
+6. **Don’t assume a '❓' tile is inaccessible until you try**—attempt to move near tiles using the 'key_press' tool to see if they can be reached and revealed; only consider them inaccessible if repeated attempts with both 'key_press' and 'path_to_location' fail.
+7. **Always use the 'key_press' tool first when exploring '❓' tiles**; use 'path_to_location' as a last resort if you're truly blocked or the destination is far.
+8. **Do not skip unexplored zones!** Make sure to reveal every '❓' tile you can; unexplored spots often hide important paths or objects.
+
+## Navigation Tools
+- **Use \`explored_map\` as your primary reference**—'❓' tiles are only shown here, not in your immediate vision.
+- Use the **'path_to_location' tool** to automatically reach or get close to '❓' tiles when direct 'key_press' navigation is difficult.
+
+## Key Reminders
+- **You must bring '❓' tiles into your view—being nearby is enough to reveal them**.
+- Do not declare an area complete or a building “missing” until you have gotten close enough to reveal ALL '❓' tiles on the map.
+- **Avoid repeated pathing in already revealed areas; if you’re stuck or looping, look for unrevealed '❓' tiles to break the loop.**
+- Prefer revealing by manual movement (with 'key_press'), but don’t hesitate to use 'path_to_location' if needed.
+- *Your full understanding of the world requires exploring—don't make assumptions about the unknown!*
+
+## IMPORTANT NOTES
+
+- **Do not backtrack or assume a place is a dead end if you didn't explore all the '❓' tiles in the area.**
+- **If you are not sure if you can reach a '❓' tile, use the 'path_to_location' tool to check if you can reach it. You can ask to the tool to find all the "reachable" '❓' tiles in the area.**
+- **Never miss this step, this is important to "build" your minimap and to be sure to not miss a critical path!**
+
+---
+
+# ⚡ TIME OPTIMIZATION (CONSISTENT WITH MAIN PROMPT)
+
+When analyzing time usage, check whether you respected these main guidelines:
+
+* **Batching Tasks**
+
+  * Did you group shopping, healing, and small errands when visiting a city, instead of repeatedly coming back?
+
+* **Repels**
+
+  * Did you use Repels in areas where wild battles had low value, especially when just traversing?
+
+* **Day/Night/Weekly Events**
+
+  * Did you engage with these when they had high ROI (key moves/items/evolutions)?
+  * Not every optional event must be used.
+
+* **Trainers**
+
+  * Did you respect the rule to **battle every trainer you encounter along your natural path**, instead of dodging them “to save time”?
+
+* **Bicycle**
+
+  * Did you **consistently use the Bicycle** in the overworld after obtaining it?
+  * Did you register it correctly (highlight Bicycle in the bag and choose “SEL” to bind it to SELECT)?
+  * Forgetting the Bike repeatedly when traveling long distances can be a minor time concern.
+
+Only mark something as a real time optimization error when it clearly caused noticeable, avoidable slowdowns or loops.
+
+---
+
+# 🧠 BATTLE / MOVESET QUALITY 
+
+### Gen 3 Damage Split Check
+In Gen 3, physical/special depends on TYPE (not by individual move like Gen 4+).
+Flag only if a move/TM choice clearly mismatched the Pokémon's role and caused repeated low damage or avoidable bad matchups.
+
+### Move Replacement Quality Check (Aligned With Main Prompt)
+When we learned/used a TM or replaced a move:
+- Did we preserve protected moves (best STAB / only coverage / only status control / only recovery)?
+- If we replaced something, was it a clearly disposable move (weak/redundant/situational)?
+Flag only when the replacement was clearly harmful and avoidable given what we knew.
+
+### Type Matchup & Immunity Check
+Flag if we **attacked into a known immunity** (type or ability):
+- Normal/Fighting → Ghost
+- Ground → Flying or Levitate
+- Electric → Ground
+- Poison → Steel
+- Psychic → Dark
+- Ghost → Normal
+- Fire → Flash Fire holder
+- Water → Water Absorb holder
+- Electric → Volt Absorb holder
+
+Also flag ×4 weakness blind spots: e.g., staying in with Gyarados vs obvious Electric threat.
+
+### Speed & Turn-Order Awareness
+Flag if we made decisions that ignored speed disadvantage:
+- Stayed in at low HP, slower, with no way to KO or priority → got KO'd predictably.
+- Attempted to heal when opponent was clearly faster and could finish us.
+
+### Switching Decision Quality
+Flag clear switching errors:
+- Stayed in a ×4 weakness matchup when a resistant switch was available.
+- Switched **into** a worse matchup (new Pokémon immediately KO'd or hard-countered).
+- Refused to switch while the opponent was freely setting up (Swords Dance, Dragon Dance, Calm Mind).
+
+Also check **sacrifice (sack) usage**:
+- Good sack: let a low-HP / low-value Pokémon faint to get a free switch for the real answer.
+- Bad sack: sacrificed a key win-condition Pokémon (only counter, main sweeper, sole status user) for no reason.
+- Missed sack opportunity: healed a doomed Pokémon instead of attacking/statusing to get value, then lost it anyway.
+
+### Setup Move Timing
+Flag if we used a boosting move in clearly unsafe conditions:
+- Opponent could 2HKO or OHKO us → wasted boost + fainted.
+- Opponent had phazing (Roar/Whirlwind) and we lost all boosts.
+- We already had enough power to sweep but got greedy with extra boosts and lost momentum.
+
+Also flag missed safe setup opportunities:
+- Free switch after a KO with no immediate threat, but we just attacked weakly instead of boosting once.
+
+### Status Move Usage
+Flag misuse of status:
+- Applied status when we had a clean KO available (wasted tempo).
+- Ignored status options when they would have swung the matchup (e.g., burn on a physical threat we couldn't OHKO).
+- Used a status move on a Pokémon with an immunity ability (Limber, Insomnia, etc.).
+
+Gen 3 status reminders:
+- Sleep lasts 2–5 turns total (prevents actions 1–4 turns).
+- Paralysis reduces Speed to 25% of normal + 25% full-para chance each turn.
+- Burn halves Attack.
+
+### Priority Move Awareness
+Flag if we forgot priority options:
+- Had Quick Attack / Mach Punch / ExtremeSpeed and a faster foe at low HP, but used a slower move and got KO'd first.
+
+### Ability Blindness
+Flag if we ignored a known ability:
+- Attacked Levitate holder with Ground.
+- Attacked Flash Fire holder with Fire.
+- Attacked Wonder Guard holder with a non-super-effective move.
+- Led a physical attacker into Intimidate without considering special options.
+
+### In-Battle Healing / Item Timing
+Flag poor heal timing:
+- Healed when we would still be KO'd after healing (wasted item + turn).
+- Healed when switching was clearly safer.
+- Healed when we could KO the opponent that turn.
+
+Flag good heal timing (reinforce):
+- Healed on a safe turn (opponent asleep/paralyzed/weak move) and it changed survival math.
+
+### Boss Battle Preparation & Execution
+For Gym / Rival / Team Rocket / E4 / Champion fights, check:
+- Did we bring at least two answers to the boss's main type?
+- Did we anticipate coverage moves or get surprised repeatedly?
+- Did we preserve our win-condition Pokémon for their ace?
+- Did we use free switches after KOs to reposition?
+- After a loss, did we write a Boss Dossier in memory?
+
+### Common Battle Mistakes Checklist
+Flag any of these if they occurred:
+- Attacked into an immunity.
+- Set up when opponent could 2HKO.
+- Stayed in a losing matchup "hoping for a crit."
+- Used a low-accuracy move when a reliable move would have won.
+- Gave free turns to an obvious setup threat.
+- Ignored weather effects (Rain boosts Water / weakens Fire; Sun boosts Fire / weakens Water).
+
+Notes:
+- There are some differences between Gen 3 and Gen 4+ with the double battle system. For example, "SURF" in Gen 3 hits only the enemies and is not friendly fire. However, Earthquake and other moves are friendly fire.
+
+---
+
+# 📋 ANALYSIS RESPONSE FORMAT
+
+**IMPORTANT:**
+If you don’t find any clear issue in a section, you must explicitly say so.
+Do **not** invent problems.
+
+Your response must follow this format (start your response with <self_criticism> and end with </self_criticism>):
+
+<self_criticism>
+## Error Detection
+[Only list errors you're genuinely certain occurred. Quote exact problematic statements or actions. If no clear errors found, state: "No definitive errors detected in recent gameplay."]
+
+## Hallucination Check
+[Only report clear cases of false claims or impossible statements. Quote verbatim if possible. If none found, state: "No hallucinations detected."]
+
+## Spatial Assumption Analysis
+[Only list instances where you claimed building or map locations without having explored and confirmed them. Quote the exact assumptions. If none found, state: "No unfounded spatial assumptions detected."]
+
+## Money/Items Management Analysis
+[Only report clear cases of inefficient resource use, consistent with the main gameplay plan. Examples: Using expensive items near Pokémon Centers, carrying no status cures in status-heavy areas, missing key bag kit categories that caused trouble. Quote specific instances. If none found, state: "No resource management issues detected."]
+
+## EXP/Training Management Analysis
+[Only report clear cases of poor training decisions relative to the lean-core strategy. Examples: leaving crucial role Pokémon drastically underleveled, grinding in obviously poor locations when better spots are available. Quote specific instances. If none found, state: "No training management issues detected."]
+
+## Battle Management Analysis
+[Only report clear cases of poor battle decisions. Check against the expert battle strategy (game.txt §16.3):
+- **Type/Ability immunity errors:** Attacked into an immunity (type or ability like Levitate/Flash Fire/Wonder Guard).
+- **Speed/turn-order mistakes:** Stayed in at low HP, slower, with no KO or priority; got predictably finished.
+- **Switching errors:** Stayed in ×4 weakness; switched into immediate KO; let opponent set up freely.
+- **Sacrifice (sack) errors:** Wasted a heal on a doomed Pokémon instead of getting value; or sacked a key win-condition.
+- **Setup timing errors:** Boosted when opponent could 2HKO; got greedy with extra boosts and lost momentum.
+- **Status misuse:** Applied status when a KO was available; ignored status that would swing the matchup.
+- **Priority oversight:** Had a priority move that would finish a faster foe but used a slower move.
+- **Heal timing errors:** Healed when still in OHKO range; healed when switching was safer; healed when KO was available.
+- **Boss prep failures:** No second answer to main type; win-condition thrown away early; no Boss Dossier after loss.
+Quote specific instances. If none found, state: "No significant battle management issues detected."]
+
+## Loop Analysis
+[Only report clear repetitive patterns indicating loops (e.g., visiting same area several times with no progress while ignoring ❓ tiles). Describe the pattern. If none found, state: "No loops detected."]
+
+## Pattern Recognition
+[Note any recurring issues across multiple segments (e.g., frequent spatial assumptions, consistent overspending, repeated under-training of support mons, reluctance to use a_until_end_of_dialog for dialogues, always doing only one tool per turn, etc.). If none, state: "No concerning patterns identified."]
+
+## Successful Decisions
+[Highlight good decisions made during gameplay, especially those aligned with the main prompt:
+- **Exploration:** aggressive and efficient exploration of ❓ tiles, smart routing.
+- **Trainer battles:** efficient trainer battles, correct cap-aware EXP routing.
+- **Battle strategy:** correct type matchup plays, smart switching (including well-timed sacrifices), safe setup timing, good use of status to swing matchups, priority moves to finish faster foes, respecting opponent abilities, proper heal timing on safe turns, preserving win-condition for boss aces, writing Boss Dossiers after losses.
+- **Legendary prep:** good capture prep (Sleep user, chip damage, balls stocked).
+- **UI efficiency:** correct use of a_until_end_of_dialog for dialogs and repeated moves, batching multiple tools in one execute_action.
+Reinforce positive behavior.]
+
+## Actionable Improvements
+[Provide 2–3 specific, concrete recommendations for the next segment. These should be realistic, directly tied to observed behavior, and aligned with the main gameplay prompt.
+If you detected at least one clear, non-trivial error, at least one of these recommendations should be something that can be turned into (or linked to) a persistent `tips_` memory entry.
+If you include ideas that are not definitively errors, label them explicitly as "Possible improvement".]
+
+## Memory / Markers Updates
+[Provide a **complete, actionable memory maintenance report**. This is NOT a place for vague suggestions—list every specific change with the exact key and proposed action.
+
+**Required structure (use these exact headers):**
+
+### 🗑️ Entries to DELETE
+List each obsolete/useless entry by key with a short reason:
+- `"key_name"` → reason (e.g., "objective completed", "outdated info", "duplicated elsewhere")
+
+### ✏️ Entries to MODIFY
+List entries that need updated content:
+- `"key_name"` → current issue + proposed new value
+
+### 🔗 Entries to CONSOLIDATE
+List entries that should be merged:
+- Merge `"key_a"` + `"key_b"` → into `"new_key"` with combined content
+
+### ➕ Entries to ADD
+List new entries to create:
+- `"new_key"` => `"proposed value"` (reason: learned lesson, new tip, etc.)
+
+### 📍 Markers to ADD/REMOVE
+List marker changes:
+- Add marker at (X, Y) with label "..." (reason)
+- Remove marker "..." (reason: no longer needed)
+
+**Rules:**
+- Review ALL visible `<memory>` entries—don't skip any.
+- Be specific: use exact keys, not "some entries about X".
+- For each error identified above, propose at least one `tips_...` entry.
+- Do NOT guess entries that aren't shown in context.
+- Keep memory lean: delete aggressively, consolidate duplicates, avoid clutter.]
+
+## Objective Review
+[Assess current objectives for clarity and alignment with your situation. Suggest any updates or refinements so they follow the WHAT/WHY/HOW/CONTEXT structure and stay at the right level (quest log, not micro-steps).]
+
+## Priority Focus
+[State the single most important tip or focus area for immediate improvement in the next segment. This can be directly linked to a `tips_` memory entry you propose above.]
+</self_criticism>
+
+---
+
+# ✅ QUALITY ASSURANCE
+
+## Final Checks Before You Output
+
+* **Honesty First**
+
+  * If there were no real errors, you must explicitly say so:
+    “No definitive errors detected in recent gameplay.”
+
+* **No Pressure**
+
+  * You do **not** need to find a problem in every section.
+  * An all-“No issues detected” report is valid if you genuinely played well.
+
+* **Specific Quotes**
+
+  * When you identify an issue, include:
+
+    * The exact statement or action.
+    * A short explanation of why it was wrong, based on mechanics or the main prompt.
+
+* **Actionable Recommendations & Memory Tips**
+
+  * Suggestions must be concrete and realistically applicable in the very next gameplay segment.
+  * For each significant recurring mistake, think about a **persistent rule** and encode it as a `tips_` memory entry in the “Memory / Markers Updates” section, so you don’t repeat the same error later.
+
+**Remember:**
+The goal is **accuracy, alignment with the main gameplay prompt, and continuous improvement** — not hunting for problems that don’t exist.
+
+Additional Notes:
+- You cannot pause gameplay; you must play continuously.
+- You cannot be soft-locked in a maze; you must find a way to escape. Sometimes the path you used to enter cannot be used to exit.
+- Do not use the `restart_console` tool as a solution when stuck in a maze. Explore all possibilities and find the correct escape route.
+- Do not give up when working on something; sometimes the solution can be tricky, but there is always a way to progress.
+- Take your time to think carefully about the best way to progress when you feel stuck.
+- Do not assume something is not reachable / impossible if you didn't try it enough.
+- Sometimes the solution can be tricky, like 1F -> 2F -> 1F -> 2F -> 3F. Everything is not always linear; this is a common pattern in mazes.
+- Do not make a summary of your gameplay unless you are instructed to do so, you must play continuously. For the summary and self-criticism, wait for the developer to instruct you to do so.
+- Do not use your memory to make a summary of your gameplay
+- 'a_until_end_of_dialog' CAN be mixed with other key_presses in the same execute_action.
+- Important: In Gen 3 (FireRed), **fainted Pokémon CAN use HM moves outside of battle**
+
+**Do not attempt to use the `execute_action` or any other tool this turn; only output the self-criticism text as specified above. Start your response with <self_criticism> and end with </self_criticism>.**

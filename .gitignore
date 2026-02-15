@@ -1,0 +1,10 @@
+*.pyc
+server/node_modules
+minimaps
+minimaps_done
+tmp_screenshots
+server/gpt_data
+server/.env
+.env
+server/backup
+backup_saves

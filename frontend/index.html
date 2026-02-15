@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>FireRed Agent Monitor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="title-wrap">
+        <div class="logo-mark" aria-hidden="true">FR</div>
+        <div>
+          <h1>FireRed Agent Monitor</h1>
+          <p class="subtitle">Real-time AI agent monitoring dashboard</p>
+        </div>
+      </div>
+
+      <div class="connection-controls">
+        <label>
+          <span class="label-text">Host</span>
+          <input id="host-input" type="text" />
+        </label>
+        <label>
+          <span class="label-text">Port</span>
+          <input id="port-input" type="number" min="1" max="65535" />
+        </label>
+        <label>
+          <span class="label-text">Poll (ms)</span>
+          <input id="poll-input" type="number" min="100" max="5000" step="100" />
+        </label>
+        <label class="checkbox-label">
+          <input id="reconnect-input" type="checkbox" checked />
+          <span class="label-text">Auto reconnect</span>
+        </label>
+        <div class="btn-group">
+          <button id="connect-btn" class="btn btn-primary">Connect</button>
+          <button id="disconnect-btn" class="btn btn-secondary">Disconnect</button>
+          <button id="clear-logs-btn" class="btn btn-secondary">Clear logs</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <section class="card runtime">
+        <h2>Runtime</h2>
+        <div id="runtime-grid" class="kv-grid"></div>
+      </section>
+
+      <section class="card trainer">
+        <h2>Trainer</h2>
+        <div id="trainer-grid" class="kv-grid"></div>
+      </section>
+
+      <section class="card streams">
+        <h2>Summary / Criticism</h2>
+        <div class="stream-columns">
+          <div>
+            <h3 id="summary-title">Summary</h3>
+            <pre id="summary-stream" class="stream-box"></pre>
+          </div>
+          <div>
+            <h3 id="criticism-title">Criticism</h3>
+            <pre id="criticism-stream" class="stream-box"></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="card team">
+        <h2>Team</h2>
+        <div id="team-list" class="stack"></div>
+      </section>
+
+      <section class="card inventory">
+        <h2>Inventory</h2>
+        <div id="inventory-wrap" class="stack"></div>
+      </section>
+
+      <section class="card objectives">
+        <h2>Objectives</h2>
+        <div id="objectives-wrap" class="stack"></div>
+      </section>
+
+      <section class="card progress">
+        <h2>Progress</h2>
+        <div id="progress-wrap" class="stack"></div>
+      </section>
+
+      <section class="card memory">
+        <h2>Memory</h2>
+        <div id="memory-wrap" class="stack"></div>
+      </section>
+
+      <section class="card minimap">
+        <h2>Minimap</h2>
+        <div id="minimap-meta" class="minimap-meta"></div>
+        <div class="minimap-scroll">
+          <div id="minimap-grid" class="minimap-grid"></div>
+        </div>
+        <div class="legend-columns">
+          <div>
+            <h3>Legend (visible tiles)</h3>
+            <div id="minimap-legend" class="legend-list"></div>
+          </div>
+          <div>
+            <h3>Markers (current map)</h3>
+            <div id="marker-list" class="legend-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card logs">
+        <h2>Agent Log</h2>
+        <div id="log-list" class="log-list"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,3 @@
+[submodule "pokefirered"]
+	path = pokefirered
+	url = https://github.com/pret/pokefirered.git

@@ -1,0 +1,220 @@
+The conversation has been too long; it is time to summarize the gameplay history so we can continue the journey without losing context.
+
+Your task is to create a detailed, continuation-ready summary of the Pokémon FireRed gameplay history.  
+This summary must be complete enough that gameplay can resume immediately with minimal confusion.
+
+---
+
+## DATA INTEGRITY RULES (CRITICAL)
+
+1) **Current state must come from the latest RAM snapshot**
+- Treat the latest `<extracted_ram_data>` as the **authoritative source** for:
+  - Current location (map/coords/facing)
+  - Party, HP, status, moves + PP
+  - Inventory + money
+  - Badges and flags visible in RAM
+- If the latest `<extracted_ram_data>` is not present in the conversation context, you must mark current-state fields as **UNKNOWN**.  
+  **Do not guess.**
+
+2) **History must be merged, not reinvented**
+- Locate the most recent previous summary block (the latest `<summary>...</summary>` if present).
+- Treat it as the canonical retained history.
+- Append new events since that summary.
+- Only correct prior history if you have direct evidence; if you must correct something, add a **CORRECTION** note rather than silently rewriting.
+
+3) **No hallucinations**
+- Only include information that is explicitly supported by the conversation / logs / RAM.
+- If something is not visible or not confirmed, write **UNKNOWN** (or omit the field if appropriate).
+
+4) **Confidence tags for key facts**
+For critical state fields (team, items, location, objectives, boss outcomes, restarts/defeats), annotate with:
+- **[CONFIRMED]** = explicitly shown in RAM/log/dialogue
+- **[INFERRED]** = strongly implied by evidence (state your reason briefly)
+- **[UNKNOWN]** = not available; do not guess
+
+5) **Verbatim quotes are optional and must be minimal**
+- Only quote verbatim when it prevents ambiguity (puzzle hints, key decisions, unusual dialogue, boss warnings).
+- Keep quotes short (1–2 lines). Prefer paraphrase otherwise.
+
+---
+
+## ANALYSIS PROCESS
+
+<conversation_analysis>
+1) Identify and reuse the latest previous summary (if present).
+   - Preserve its historical sections and ledgers.
+   - Add new entries since that summary.
+
+2) Extract the **current game state** from the latest `<extracted_ram_data>`.
+   - If missing: mark key current-state sections as [UNKNOWN].
+
+3) Build/update these ledgers (must be cumulative since start of run):
+   - Restart Console History
+   - Defeat History (including reset-avoided defeats)
+   - Dungeon / Maze Solution playbook
+
+4) Update Memory/Markers and Objectives strictly from what is visible.
+   - Do not invent memory entries, markers, or objectives not present.
+
+5) Produce the final `<summary>` output using the format below.
+</conversation_analysis>
+
+---
+
+## SUMMARY OUTPUT FORMAT (MUST MATCH)
+
+Your response must start with `<summary>` and end with `</summary>`.
+
+<summary>
+# GAMEPLAY SUMMARY
+
+## Summary
+A readable overview of the journey so far (major milestones, major wins/losses, major captures, big routing pivots).
+Keep it concise but meaningful.
+
+## Current Game State (RAM-Authoritative)
+- Location (map + coords + facing) [CONFIRMED/INFERRED/UNKNOWN]
+- Current objective / immediate goal [CONFIRMED/INFERRED/UNKNOWN]
+- Badges obtained (Kanto count, max 8) [CONFIRMED/INFERRED/UNKNOWN]
+- Money [CONFIRMED/UNKNOWN]
+- Any active menus/battle/dialog status if currently relevant [CONFIRMED/UNKNOWN]
+
+## Pokémon Team (Party)
+For each party Pokémon, include:
+- Nickname + species [CONFIRMED/UNKNOWN]
+- Level [CONFIRMED/UNKNOWN]
+- Sex (only if visible) [CONFIRMED/UNKNOWN]
+- HP + status conditions [CONFIRMED/UNKNOWN]
+- Moves + PP (if visible) [CONFIRMED/UNKNOWN]
+- Held item (if visible) [CONFIRMED/UNKNOWN]
+- Intended role (sweeper / pivot / status-control / catcher / HM-utility) [INFERRED/UNKNOWN]
+- Notes: strengths, coverage, constraints (e.g., key TM used, important coverage) [INFERRED/UNKNOWN]
+Do NOT fabricate stats. Only include stat numbers if they were explicitly visible.
+
+## Inventory Snapshot (Bag)
+- Key consumables (balls, heals, status cures, repels, escape ropes) [CONFIRMED/UNKNOWN]
+- Any item shortages that matter for next steps [INFERRED/UNKNOWN]
+Do not attempt a full bag dump if it is not visible; prioritize what matters.
+
+## Bag Kits Readiness (Context-Based)
+Summarize whether we are ready for the next context:
+- Catch readiness (balls + status tools) [INFERRED/UNKNOWN]
+- Dungeon readiness (heals + status cures + escape rope) [INFERRED/UNKNOWN]
+- Boss readiness (strong heals + status cures + optional X-items) [INFERRED/UNKNOWN]
+If not ready, state what’s missing.
+
+## Key Items and Progress
+- Important Key Items obtained (story-critical items, passes/tickets, etc.) [CONFIRMED/UNKNOWN]
+- HMs obtained + who can use them (if known) [CONFIRMED/UNKNOWN]
+- Important TMs obtained/used (only notable ones) [CONFIRMED/INFERRED/UNKNOWN]
+- Major story gates cleared/unlocked (e.g., new regions, key events) [CONFIRMED/INFERRED/UNKNOWN]
+
+## PC Items / Pokémon Storage
+- Pokémon stored in PC that matter (HM mules, backups, candidates for roles) [CONFIRMED/UNKNOWN]
+- Items stored in PC if referenced [CONFIRMED/UNKNOWN]
+If storage is not visible in logs, write: **UNKNOWN**.
+
+## Boss Dossier Highlights
+Record only what we actually observed:
+- Gym leaders / Rival / Team Rocket bosses / Elite Four / Champion (Rival) attempts:
+  - What we fought (species seen, notable moves/status/strategies) [CONFIRMED/INFERRED/UNKNOWN]
+  - What worked / what failed [INFERRED/UNKNOWN]
+  - Any planned fixes (levels, TMs, items, lead changes) [INFERRED/UNKNOWN]
+Keep it concise but actionable.
+
+## Map Exploration Status (Actionable, Not Exhaustive)
+Focus on what helps resume navigation:
+- Current area: notable unexplored clusters near the objective (not every ❓ tile) [INFERRED/UNKNOWN]
+- Missing/uncertain connections (doors/stairs/ladders/warps) [INFERRED/UNKNOWN]
+- Marker gaps or suspected mis-markers (only if evidenced) [CONFIRMED/INFERRED/UNKNOWN]
+
+## Dungeon / Maze Solution (Playbook)
+A cumulative “how to not re-solve the maze” section.
+For each solved dungeon/maze include:
+- Dungeon name + floors/sections covered [CONFIRMED/UNKNOWN]
+- Key connector mapping (ladder A -> floor X, door -> room, switch -> gate), using markers if referenced [CONFIRMED/INFERRED/UNKNOWN]
+- The successful route (short paragraph + bullet points) [INFERRED/UNKNOWN]
+- Pitfalls/traps/one-way patterns (e.g., 1F->2F->1F->3F) [INFERRED/UNKNOWN]
+- Exit method (normal exit / escape rope / warp) if relevant [CONFIRMED/INFERRED/UNKNOWN]
+Do not invent mappings. If incomplete, say what is unknown.
+
+## Restart Console History (Cumulative)
+Log every `restart_console` usage since the start of the run.
+For each restart:
+- Step / timestamp (or UNKNOWN) [CONFIRMED/UNKNOWN]
+- Location/context at time of restart [CONFIRMED/UNKNOWN]
+- Why we restarted (failed legendary, boss loss, prevent catastrophic loss, etc.) [CONFIRMED/INFERRED/UNKNOWN]
+- What we expected to fix by restarting [INFERRED/UNKNOWN]
+- Outcome after restart (if known) [CONFIRMED/INFERRED/UNKNOWN]
+Preserve prior restart entries from the previous summary and append new ones.
+
+## Defeat History (Cumulative)
+A “defeat” includes:
+- Any official **whiteout/blackout** (all party fainted), AND
+- Any restart that was triggered to avoid an imminent whiteout (e.g., resetting before the last Pokémon fainted).
+For each defeat:
+- Step / timestamp (or UNKNOWN) [CONFIRMED/UNKNOWN]
+- Location [CONFIRMED/UNKNOWN]
+- Cause (which battle/encounter, key threat, mistake/RNG if known) [CONFIRMED/INFERRED/UNKNOWN]
+- Whether it was:
+  - **Whiteout** (full faint) OR
+  - **Reset-Avoided Defeat** (restart used before full faint)  
+  [CONFIRMED/INFERRED/UNKNOWN]
+- What changed afterward (team prep, items, routing, strategy) [INFERRED/UNKNOWN]
+Preserve prior defeat entries and append new ones.
+
+## Full Timeline of Events (Complete, Chronological, Grouped by Location/Segment)
+This timeline must cover the entire run from the beginning.
+It must not omit meaningful events, but it may group them sensibly to remain readable.
+
+Format rules:
+- Use chronological order.
+- Group by “segment” (usually location/dungeon/route/gym/town) with a header:
+  - Example: **[Step range or time] Location / Segment Name**
+- Under each header, write:
+  - A short paragraph summarizing what happened there, AND/OR
+  - Bullet points for key events (captures, evolutions, defeats, restarts, gym battles, items, routing decisions, puzzles, legendaries, major purchases, major strategy changes).
+- Do not explode into micro-steps. Focus on meaningful events.
+- Preserve earlier timeline entries from the previous summary and append the newest segment(s).
+
+## Recent Detailed Timeline (Last Segment Since Previous Summary)
+A higher-detail view of the most recent portion (since the last summary):
+- Include more specifics: battles, captures, menu decisions that matter, key dialogue hints, marker changes, objective pivots.
+- Still avoid quoting long verbatim text.
+
+## Critical Decisions & Strategy Notes
+Highlight high-impact strategic choices and why they mattered:
+- Team building moves (TMs, role assignments, evolutions)
+- XP routing decisions
+- Inventory management decisions (restocks, kits)
+- Boss preparation/adjustments
+- Any notable time-saving routing
+
+## Memory / Markers Management
+- List memory entries and markers that should be added/updated/removed based on confirmed evidence.
+- Do not invent memory keys or markers not present.
+- If `<memory>` content is not visible, state what is UNKNOWN and only recommend updates based on explicit references.
+
+## Objectives Analysis
+- Review objectives for clarity and relevance.
+- Update objectives based on progress.
+- Ensure objectives are not micro-steps and follow WHAT/WHY/HOW/CONTEXT.
+If objectives are not visible, mark UNKNOWN and only suggest a reasonable next objective set based on confirmed current state.
+
+## Recommended Next Steps
+Give a continuation plan:
+- Primary next objective (1) with WHY/HOW
+- Secondary objectives (2–4) with brief WHY/HOW
+- Immediate prep checklist (team, items, heals, dungeon kit/boss kit if relevant)
+</summary>
+
+---
+
+## IMPORTANT NOTES
+
+- The goal is continuity without hallucinations: it is better to mark UNKNOWN than to guess.
+- Always do your best to fill the step number and timestamp for everything you can from your history. This is very important to keep the context of the journey.
+- Reuse and preserve all information from the previous summary when creating the new summary, don't try to condense it. Take the first summary from the history (if available) and enhance it with the new information.
+  Only the most recent summary is retained in memory, so no information from previous summaries should be lost ! Do not remove any information from the previous summaries.
+- Include all maze/dungeon solution info gathered during the journey in the Dungeon / Maze Solution section, so we never have to re-solve known mazes.
+- **Do not attempt to use the 'execute_action' tool during this turn. Your sole task is to write the summary text.**
